@@ -1,61 +1,55 @@
-import {
-  addCategory,
-  assertCategoryExists,
-  assertCategoryListDoesNotExists,
-  assertCategoryListExists,
-  collapseCategoryList,
-  defocusCategory,
-  renameCategory,
-  startEditingCategory,
-} from '../e2e/utils/testCategoryHelperUtils'
-import { dynamicTimeCategoryName } from '../e2e/utils/testHelperEnums'
-// import { defaultInit, getTestID } from '../e2e/utils/testHelperUtils'
-import { TestID } from '../../src/resources/TestID'
-
-import userEvent from '@testing-library/user-event'
-import '@testing-library/jest-dom/extend-expect'
-import { screen } from '@testing-library/react'
+// @ts-ignore
 import React from 'react'
+import { fireEvent, render, screen } from '@testing-library/react'
+import '@testing-library/jest-dom/extend-expect'
+import userEvent from '@testing-library/user-event'
+
+import { TestID } from '../../src/resources/TestID'
 import { TakeNoteApp } from '../../src/client/containers/TakeNoteApp'
 import { renderWithRouter } from '../unit/client/testHelpers'
+import { AddCategoryButton, AddCategoryButtonProps } from '../../src/client/components/AppSidebar/AddCategoryButton'
+import { AddCategoryForm, AddCategoryFormProps } from '../../src/client/components/AppSidebar/AddCategoryForm'
+import reducer, { initialState, toggleDarkTheme } from '../../src/client/slices/settings'
 
-describe('Categories', () => {
+describe('Sample Tests', () => {
+  it('Should see the App page', () => {
+    const container = renderWithRouter(<TakeNoteApp />)
 
-  it('should hide the category list on click of category', () => {
-
-    renderWithRouter(<TakeNoteApp />)
-    // userEvent.click(screen.getByTestId(TestID.ADD_CATEGORY_BUTTON))
-    // userEvent.type(screen.getByTestId(TestID.NEW_CATEGORY_INPUT), 'TestCategoryName')
-    // userEvent.click(screen.getByTestId(TestID.NEW_CATEGORY_FORM))
-    // console.log('heloijowfiejoiwejfoij')
-
-    const content = screen.getByTestId(TestID.ADD_CATEGORY_BUTTON)
-    expect(content).toBeInTheDocument()
-
-    // cy.contains('TestCategory')
-    //
-    // collapseCategoryList()
-    //
-    // assertCategoryListDoesNotExists()
+    const location = window.location.pathname
+    expect(location).toBe('/')
   })
 
-  // it('should show category list on add new category', () => {
-  //   collapseCategoryList()
-  //
-  //   addCategory(dynamicTimeCategoryName)
-  //
-  //   assertCategoryListExists()
-  // })
-  //
-  // it('should rename existing category after defocusing edit state', () => {
-  //   const originalCategoryName = 'Category'
-  //   const newCategoryName = 'Renamed Category'
-  //
-  //   addCategory(originalCategoryName)
-  //   startEditingCategory(originalCategoryName)
-  //   renameCategory(originalCategoryName, newCategoryName)
-  //   defocusCategory(newCategoryName)
-  //
-  //   assertCategoryExists(newCategoryName)
-  // })
+  it('renders the AddCategoryButton component', () => {
+    const enabledProps: AddCategoryButtonProps = {
+      handler: jest.fn,
+      label: 'Test',
+      dataTestID: TestID.ADD_CATEGORY_BUTTON,
+    }
+
+    const component = render(<AddCategoryButton {...enabledProps} />)
+
+    expect(component).toBeTruthy()
+  })
+
+  it('renders the AddCategoryForm component', () => {
+    const enabledProps: AddCategoryFormProps = {
+      submitHandler: jest.fn,
+      changeHandler: jest.fn,
+      resetHandler: jest.fn,
+      editingCategoryId: 'Category-id',
+      tempCategoryName: 'Category-id',
+      dataTestID: TestID.NEW_CATEGORY_INPUT,
+    }
+
+    const component = render(<AddCategoryForm {...enabledProps} />)
+
+    expect(component).toBeTruthy()
+  })
+
+  it('should toggle dark theme state', () => {
+    const nextState = { ...initialState, darkTheme: !initialState.darkTheme }
+    const result = reducer(initialState, toggleDarkTheme())
+
+    expect(result).toEqual(nextState)
+  })
 })
