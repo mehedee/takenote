@@ -1,55 +1,82 @@
 // @ts-ignore
 import React from 'react'
-import { fireEvent, render, screen } from '@testing-library/react'
+import {fireEvent, render, screen} from '@testing-library/react'
 import '@testing-library/jest-dom/extend-expect'
 import userEvent from '@testing-library/user-event'
 
-import { TestID } from '../../src/resources/TestID'
-import { TakeNoteApp } from '../../src/client/containers/TakeNoteApp'
-import { renderWithRouter } from '../unit/client/testHelpers'
-import { AddCategoryButton, AddCategoryButtonProps } from '../../src/client/components/AppSidebar/AddCategoryButton'
-import { AddCategoryForm, AddCategoryFormProps } from '../../src/client/components/AppSidebar/AddCategoryForm'
-import reducer, { initialState, toggleDarkTheme } from '../../src/client/slices/settings'
+import {TakeNoteApp} from '../../src/client/containers/TakeNoteApp'
+import {NoteEditor} from '../../src/client/containers/NoteEditor'
+import {renderWithRouter} from '../unit/client/testHelpers'
+import {AddCategoryButton, AddCategoryButtonProps} from '../../src/client/components/AppSidebar/AddCategoryButton'
+import {AddCategoryForm, AddCategoryFormProps} from '../../src/client/components/AppSidebar/AddCategoryForm'
+import reducer, {initialState, toggleDarkTheme} from '../../src/client/slices/settings'
 
 describe('Sample Tests', () => {
-  it('Should see the App page', () => {
-    const container = renderWithRouter(<TakeNoteApp />)
+  it('Should see the TakeNote App', () => {
+    renderWithRouter(<TakeNoteApp/>)
 
     const location = window.location.pathname
     expect(location).toBe('/')
   })
 
-  it('renders the AddCategoryButton component', () => {
-    const enabledProps: AddCategoryButtonProps = {
+  it('When rendered Add Category Button should be present in the document', () => {
+    const enabledProps = {
       handler: jest.fn,
       label: 'Test',
-      dataTestID: TestID.ADD_CATEGORY_BUTTON,
+      dataTestID: 'add-category-button',
     }
 
     const component = render(<AddCategoryButton {...enabledProps} />)
 
-    expect(component).toBeTruthy()
+    const content = screen.getByTestId('add-category-button');
+    expect(content).toBeInTheDocument()
   })
 
-  it('renders the AddCategoryForm component', () => {
+  it('Category Add form should be available when the Category Form component is called', () => {
     const enabledProps: AddCategoryFormProps = {
       submitHandler: jest.fn,
       changeHandler: jest.fn,
       resetHandler: jest.fn,
       editingCategoryId: 'Category-id',
       tempCategoryName: 'Category-id',
-      dataTestID: TestID.NEW_CATEGORY_INPUT,
+      dataTestID: 'new-category-label',
     }
-
     const component = render(<AddCategoryForm {...enabledProps} />)
-
     expect(component).toBeTruthy()
   })
 
-  it('should toggle dark theme state', () => {
-    const nextState = { ...initialState, darkTheme: !initialState.darkTheme }
-    const result = reducer(initialState, toggleDarkTheme())
+  it('State update on Theme change', () => {
+    const nextState = {...initialState, darkTheme: !initialState.darkTheme}
+    const triggerChange = reducer(initialState, toggleDarkTheme())
 
-    expect(result).toEqual(nextState)
+    expect(triggerChange).toEqual(nextState)
+  })
+
+  it('Should change to dark theme when clicked the theme button', () => {
+    const container = renderWithRouter(<TakeNoteApp/>)
+    const themeButton = screen.getByRole('button', {name: 'Themes'})
+    fireEvent.click(themeButton)
+    const target = container.container.firstChild
+
+    expect(target).toHaveClass('dark')
+  })
+
+
+  // it('Should Open the Settings Modal when clicked settings icon', () => {
+  //   const container = renderWithRouter(<TakeNoteApp/>)
+  //   const settingsBtn = screen.getByRole('button', {name: 'Settings'})
+  //   fireEvent.click(settingsBtn)
+  //
+  //   const target = container.getByText('settings-modal')
+  //
+  //   expect(target).toBeInTheDocument()
+  // })
+
+  it('Should open new note when pressed CTRL+ALT+N', ()=>{
+    const container = renderWithRouter(<TakeNoteApp/>)
+    const noteEditor = screen.getByTestId('sidebar-action-create-new-note')
+    fireEvent.keyDown(noteEditor, {key: 'n', ctrlKey: true, altKey: true})
+    const target = screen.getByText('New note')
+    expect(target).toBeInTheDocument()
   })
 })
