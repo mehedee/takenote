@@ -6,6 +6,7 @@ import userEvent from '@testing-library/user-event'
 
 import {TakeNoteApp} from '../../src/client/containers/TakeNoteApp'
 import {NoteEditor} from '../../src/client/containers/NoteEditor'
+import {EmptyEditor} from '../../src/client/components/Editor/EmptyEditor'
 import {renderWithRouter} from '../unit/client/testHelpers'
 import {AddCategoryButton, AddCategoryButtonProps} from '../../src/client/components/AppSidebar/AddCategoryButton'
 import {AddCategoryForm, AddCategoryFormProps} from '../../src/client/components/AppSidebar/AddCategoryForm'
@@ -61,7 +62,6 @@ describe('Sample Tests', () => {
     expect(target).toHaveClass('dark')
   })
 
-
   // it('Should Open the Settings Modal when clicked settings icon', () => {
   //   const container = renderWithRouter(<TakeNoteApp/>)
   //   const settingsBtn = screen.getByRole('button', {name: 'Settings'})
@@ -72,11 +72,19 @@ describe('Sample Tests', () => {
   //   expect(target).toBeInTheDocument()
   // })
 
-  it('Should open new note when pressed CTRL+ALT+N', ()=>{
+  it('Should open new note when pressed CTRL+ALT+N', () => {
     const container = renderWithRouter(<TakeNoteApp/>)
     const noteEditor = screen.getByTestId('sidebar-action-create-new-note')
     fireEvent.keyDown(noteEditor, {key: 'n', ctrlKey: true, altKey: true})
     const target = screen.getByText('New note')
     expect(target).toBeInTheDocument()
+  })
+
+  it('Empty Editor Window Rendered with CTRL+ALT+N text', ()=>{
+    const component = render(<EmptyEditor />)
+    const createNoteText = component.queryByTestId('empty-editor')
+    expect(component.getByText('CTRL')).toBeInTheDocument()
+    expect(component.getByText('ALT')).toBeInTheDocument()
+    expect(component.getByText('N')).toBeInTheDocument()
   })
 })
