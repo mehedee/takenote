@@ -1,20 +1,26 @@
 // @ts-ignore
 import React from 'react'
-import {fireEvent, render, screen} from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom/extend-expect'
 import userEvent from '@testing-library/user-event'
 
-import {TakeNoteApp} from '../../src/client/containers/TakeNoteApp'
-import {NoteEditor} from '../../src/client/containers/NoteEditor'
-import {EmptyEditor} from '../../src/client/components/Editor/EmptyEditor'
-import {renderWithRouter} from '../unit/client/testHelpers'
-import {AddCategoryButton, AddCategoryButtonProps} from '../../src/client/components/AppSidebar/AddCategoryButton'
-import {AddCategoryForm, AddCategoryFormProps} from '../../src/client/components/AppSidebar/AddCategoryForm'
-import reducer, {initialState, toggleDarkTheme} from '../../src/client/slices/settings'
+import { TakeNoteApp } from '../../src/client/containers/TakeNoteApp'
+import { NoteEditor } from '../../src/client/containers/NoteEditor'
+import { EmptyEditor } from '../../src/client/components/Editor/EmptyEditor'
+import { renderWithRouter } from '../unit/client/testHelpers'
+import {
+  AddCategoryButton,
+  AddCategoryButtonProps,
+} from '../../src/client/components/AppSidebar/AddCategoryButton'
+import {
+  AddCategoryForm,
+  AddCategoryFormProps,
+} from '../../src/client/components/AppSidebar/AddCategoryForm'
+import reducer, { initialState, toggleDarkTheme } from '../../src/client/slices/settings'
 
 describe('Sample Tests', () => {
   it('Should see the TakeNote App', () => {
-    renderWithRouter(<TakeNoteApp/>)
+    renderWithRouter(<TakeNoteApp />)
 
     const location = window.location.pathname
     expect(location).toBe('/')
@@ -29,7 +35,7 @@ describe('Sample Tests', () => {
 
     const component = render(<AddCategoryButton {...enabledProps} />)
 
-    const content = screen.getByTestId('add-category-button');
+    const content = screen.getByTestId('add-category-button')
     expect(content).toBeInTheDocument()
   })
 
@@ -47,15 +53,15 @@ describe('Sample Tests', () => {
   })
 
   it('State update on Theme change', () => {
-    const nextState = {...initialState, darkTheme: !initialState.darkTheme}
+    const nextState = { ...initialState, darkTheme: !initialState.darkTheme }
     const triggerChange = reducer(initialState, toggleDarkTheme())
 
     expect(triggerChange).toEqual(nextState)
   })
 
   it('Should change to dark theme when clicked the theme button', () => {
-    const container = renderWithRouter(<TakeNoteApp/>)
-    const themeButton = screen.getByRole('button', {name: 'Themes'})
+    const container = renderWithRouter(<TakeNoteApp />)
+    const themeButton = screen.getByRole('button', { name: 'Themes' })
     fireEvent.click(themeButton)
     const target = container.container.firstChild
 
@@ -73,14 +79,14 @@ describe('Sample Tests', () => {
   // })
 
   it('Should open new note when pressed CTRL+ALT+N', () => {
-    const container = renderWithRouter(<TakeNoteApp/>)
+    const container = renderWithRouter(<TakeNoteApp />)
     const noteEditor = screen.getByTestId('sidebar-action-create-new-note')
-    fireEvent.keyDown(noteEditor, {key: 'n', ctrlKey: true, altKey: true})
+    fireEvent.keyDown(noteEditor, { key: 'n', ctrlKey: true, altKey: true })
     const target = screen.getByText('New note')
     expect(target).toBeInTheDocument()
   })
 
-  it('Empty Editor Window Rendered with CTRL+ALT+N text', ()=>{
+  it('Empty Editor Window Rendered with CTRL+ALT+N text', () => {
     const component = render(<EmptyEditor />)
     const createNoteText = component.queryByTestId('empty-editor')
     expect(component.getByText('CTRL')).toBeInTheDocument()
