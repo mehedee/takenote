@@ -13,15 +13,15 @@ import {
 } from '../../src/client/components/AppSidebar/AddCategoryForm'
 import reducer, { initialState, toggleDarkTheme } from '../../src/client/slices/settings'
 
-describe('Sample Tests', () => {
-  it('Should see the TakeNote App', () => {
+describe('TakeNote Tests', () => {
+  it('Should render the TakeNote component properly', () => {
     renderWithRouter(<TakeNoteApp />)
 
     const location = window.location.pathname
     expect(location).toBe('/')
   })
 
-  it('When rendered Add Category Button should be present in the document', () => {
+  it('Should have Add Category component rendered when loaded TakeNote App', () => {
     const enabledProps = {
       handler: jest.fn,
       label: 'Test',
@@ -34,7 +34,7 @@ describe('Sample Tests', () => {
     expect(content).toBeInTheDocument()
   })
 
-  it('Category Add form should be available when the Category Form component is called', () => {
+  it('Should render `Category Add Form` component when the `Add Category` button is clicked', () => {
     const enabledProps: AddCategoryFormProps = {
       submitHandler: jest.fn,
       changeHandler: jest.fn,
@@ -47,20 +47,36 @@ describe('Sample Tests', () => {
     expect(component).toBeTruthy()
   })
 
-  it('State update on Theme change', () => {
+  it('Should change the theme color status when Status is updated ', () => {
     const nextState = { ...initialState, darkTheme: !initialState.darkTheme }
     const triggerChange = reducer(initialState, toggleDarkTheme())
 
     expect(triggerChange).toEqual(nextState)
   })
 
-  it('Should change to dark theme when clicked the theme button', () => {
+  it('Should change to `dark theme` when clicked the `theme button`', () => {
     const container = renderWithRouter(<TakeNoteApp />)
     const themeButton = screen.getByRole('button', { name: 'Themes' })
     fireEvent.click(themeButton)
     const target = container.container.firstChild
 
     expect(target).toHaveClass('dark')
+  })
+
+  it('Should render `Empty Editor` component with CTRL+ALT+N text', () => {
+    const component = render(<EmptyEditor />)
+    const createNoteText = component.queryByTestId('empty-editor')
+    expect(component.getByText('CTRL')).toBeInTheDocument()
+    expect(component.getByText('ALT')).toBeInTheDocument()
+    expect(component.getByText('N')).toBeInTheDocument()
+  })
+
+  it('Should open new note in the window when pressed `CTRL+ALT+N`', () => {
+    const container = renderWithRouter(<TakeNoteApp />)
+    const noteEditor = screen.getByTestId('sidebar-action-create-new-note')
+    fireEvent.keyDown(noteEditor, { key: 'n', ctrlKey: true, altKey: true })
+    const target = screen.getByText('New note')
+    expect(target).toBeInTheDocument()
   })
 
   // it('Should Open the Settings Modal when clicked settings icon', () => {
@@ -72,20 +88,4 @@ describe('Sample Tests', () => {
   //
   //   expect(target).toBeInTheDocument()
   // })
-
-  it('Should open new note when pressed CTRL+ALT+N', () => {
-    const container = renderWithRouter(<TakeNoteApp />)
-    const noteEditor = screen.getByTestId('sidebar-action-create-new-note')
-    fireEvent.keyDown(noteEditor, { key: 'n', ctrlKey: true, altKey: true })
-    const target = screen.getByText('New note')
-    expect(target).toBeInTheDocument()
-  })
-
-  it('Empty Editor Window Rendered with CTRL+ALT+N text', () => {
-    const component = render(<EmptyEditor />)
-    const createNoteText = component.queryByTestId('empty-editor')
-    expect(component.getByText('CTRL')).toBeInTheDocument()
-    expect(component.getByText('ALT')).toBeInTheDocument()
-    expect(component.getByText('N')).toBeInTheDocument()
-  })
 })
