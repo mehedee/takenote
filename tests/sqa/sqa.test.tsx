@@ -66,6 +66,7 @@ describe('TakeNote Tests', () => {
   it('Should render `Empty Editor` component with CTRL+ALT+N text', () => {
     const component = render(<EmptyEditor />)
     const createNoteText = component.queryByTestId('empty-editor')
+    expect(createNoteText).toBeInTheDocument()
     expect(component.getByText('CTRL')).toBeInTheDocument()
     expect(component.getByText('ALT')).toBeInTheDocument()
     expect(component.getByText('N')).toBeInTheDocument()
