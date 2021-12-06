@@ -2,16 +2,11 @@
 import React from 'react'
 import { fireEvent, render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom/extend-expect'
-import userEvent from '@testing-library/user-event'
 
 import { TakeNoteApp } from '../../src/client/containers/TakeNoteApp'
-import { NoteEditor } from '../../src/client/containers/NoteEditor'
 import { EmptyEditor } from '../../src/client/components/Editor/EmptyEditor'
 import { renderWithRouter } from '../unit/client/testHelpers'
-import {
-  AddCategoryButton,
-  AddCategoryButtonProps,
-} from '../../src/client/components/AppSidebar/AddCategoryButton'
+import { AddCategoryButton } from '../../src/client/components/AppSidebar/AddCategoryButton'
 import {
   AddCategoryForm,
   AddCategoryFormProps,
