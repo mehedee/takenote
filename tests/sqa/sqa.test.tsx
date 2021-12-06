@@ -15,20 +15,21 @@ import reducer, { initialState, toggleDarkTheme } from '../../src/client/slices/
 
 describe('TakeNote Tests', () => {
   it('Should render the TakeNote component properly', () => {
-    renderWithRouter(<TakeNoteApp />)
-
+    const component = renderWithRouter(<TakeNoteApp />)
     const location = window.location.pathname
+
     expect(location).toBe('/')
+    expect(component).toBeTruthy()
   })
 
   it('Should have Add Category component rendered when loaded TakeNote App', () => {
-    const enabledProps = {
+    const props = {
       handler: jest.fn,
       label: 'Test',
       dataTestID: 'add-category-button',
     }
 
-    const component = render(<AddCategoryButton {...enabledProps} />)
+    render(<AddCategoryButton {...props} />)
 
     const content = screen.getByTestId('add-category-button')
     expect(content).toBeInTheDocument()
