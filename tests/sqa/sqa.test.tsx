@@ -14,6 +14,11 @@ import {
   AddCategoryFormProps,
 } from '../../src/client/components/AppSidebar/AddCategoryForm'
 import reducer, { initialState, toggleDarkTheme } from '../../src/client/slices/settings'
+import { NoteEditor } from '../../src/client/containers/NoteEditor'
+
+const note = `This is the first line
+And this is the 2nd line.
+This paragraph is used for testing the note creation an defining note name`
 
 describe('TakeNote Tests', () => {
   // it('Should have Add Category component rendered when loaded TakeNote App', () => {
@@ -31,6 +36,8 @@ describe('TakeNote Tests', () => {
 
   it('Should add new category', () => {
     const component = renderWithRouter(<TakeNoteApp />)
+
+    // click the Add Category Button
     const addCategoryBtn = screen.getByTestId('add-category-button')
     fireEvent.click(addCategoryBtn)
 
@@ -44,20 +51,31 @@ describe('TakeNote Tests', () => {
     expect(selector).toBeInTheDocument()
   })
 
-  it('Creates a new note and previews it', () => {
-    expect(4).toBe(4)
-  })
+  // it('Creates a new note and previews it', () => {
+  //   renderWithRouter(<TakeNoteApp />)
+  //   renderWithRouter(<NoteEditor />)
+  //
+  //   const noteEditor = screen.getByTestId('sidebar-action-create-new-note')
+  //   fireEvent.click(noteEditor)
+  //
+  //   const textAreaInput = screen.getByTestId('codemirror-editor')
+  //   userEvent.type(textAreaInput, note)
+  //
+  //   const target = screen.getByTestId('note-title-0')
+  //
+  //   expect(target).toHaveDisplayValue('This is the first line')
+  // })
 
-  it('Should the title only have the first line of the note only', () => {
-    // const note = `The note title
-    // only should add the first line
-    // of the note.`
-    //
-    // const container = renderWithRouter(<TakeNoteApp />)
-    //
-    // const title = screen.getByTestId('note-title-0')
-    // expect(title).toMatch(`The note title`)
-  })
+  // it('Should the title only have the first line of the note only', () => {
+  // const note = `The note title
+  // only should add the first line
+  // of the note.`
+  //
+  // const container = renderWithRouter(<TakeNoteApp />)
+  //
+  // const title = screen.getByTestId('note-title-0')
+  // expect(title).toMatch(`The note title`)
+  // })
 
   it('Should render the TakeNote component properly', () => {
     const component = renderWithRouter(<TakeNoteApp />)
