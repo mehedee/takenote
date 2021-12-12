@@ -16,10 +16,6 @@ import {
 import reducer, { initialState, toggleDarkTheme } from '../../src/client/slices/settings'
 import { NoteEditor } from '../../src/client/containers/NoteEditor'
 
-const note = `This is the first line
-And this is the 2nd line.
-This paragraph is used for testing the note creation an defining note name`
-
 describe('TakeNote Tests', () => {
   // it('Should have Add Category component rendered when loaded TakeNote App', () => {
   //   const props = {
@@ -34,9 +30,7 @@ describe('TakeNote Tests', () => {
   //   expect(content).toBeInTheDocument()
   // })
 
-  it('Should add new category', () => {
-    const component = renderWithRouter(<TakeNoteApp />)
-
+  function createCategory(categoryName: string) {
     // click the Add Category Button
     const addCategoryBtn = screen.getByTestId('add-category-button')
     fireEvent.click(addCategoryBtn)
@@ -44,38 +38,54 @@ describe('TakeNote Tests', () => {
     const inputField = screen.getByTestId('new-category-label')
     const formSubmitBtn = screen.getByTestId('new-category-form')
 
-    userEvent.type(inputField, 'TestCategory')
+    userEvent.type(inputField, categoryName)
     fireEvent.submit(formSubmitBtn)
+  }
+
+  it('Should add new category', () => {
+    const component = renderWithRouter(<TakeNoteApp />)
+    const categoryName = 'TestCategory'
+    createCategory(categoryName)
 
     const selector = screen.getByText('TestCategory')
     expect(selector).toBeInTheDocument()
   })
 
-  // it('Creates a new note and previews it', () => {
-  //   renderWithRouter(<TakeNoteApp />)
-  //   renderWithRouter(<NoteEditor />)
-  //
-  //   const noteEditor = screen.getByTestId('sidebar-action-create-new-note')
-  //   fireEvent.click(noteEditor)
-  //
-  //   const textAreaInput = screen.getByTestId('codemirror-editor')
-  //   userEvent.type(textAreaInput, note)
-  //
-  //   const target = screen.getByTestId('note-title-0')
-  //
-  //   expect(target).toHaveDisplayValue('This is the first line')
-  // })
+  it('Should Collapse Category List if there are items in categories', () => {
+    const component = renderWithRouter(<TakeNoteApp />)
 
-  // it('Should the title only have the first line of the note only', () => {
-  // const note = `The note title
-  // only should add the first line
-  // of the note.`
-  //
-  // const container = renderWithRouter(<TakeNoteApp />)
-  //
-  // const title = screen.getByTestId('note-title-0')
-  // expect(title).toMatch(`The note title`)
-  // })
+    createCategory('TestCategory')
+    createCategory('TestCategory2')
+
+    const triggerBtn = screen.getByTestId('category-collapse-button')
+    const targetElement = screen.getAllByTestId('category-list-div')
+
+    expect(targetElement).toHaveLength(2)
+    targetElement.forEach((element) => {
+      expect(element).toBeInTheDocument()
+    })
+
+    fireEvent.click(triggerBtn)
+
+    targetElement.forEach((element) => {
+      expect(element).not.toBeInTheDocument()
+    })
+  })
+
+  it('Should Show the last sync time on clicking Sync button', () => {
+    const component = renderWithRouter(<TakeNoteApp />)
+    const noteEditor = screen.getByTestId('sidebar-action-create-new-note')
+    fireEvent.keyDown(noteEditor, { key: 'n', ctrlKey: true, altKey: true })
+    const syncBtn = screen.getByText('12:29 AM on 12/13/2021')
+
+    fireEvent.click(syncBtn)
+
+    const timeStamp = new Date().toLocaleString()
+    console.log(timeStamp)
+
+    const lastSyncTime = screen.getByTestId('last-synced-notification-date')
+    expect(lastSyncTime).toBeInTheDocument()
+  })
 
   it('Should render the TakeNote component properly', () => {
     const component = renderWithRouter(<TakeNoteApp />)
@@ -89,13 +99,13 @@ describe('TakeNote Tests', () => {
     const container = renderWithRouter(<TakeNoteApp />)
     const themeButton = screen.getByRole('button', { name: 'Themes' })
     fireEvent.click(themeButton)
+
     const target = container.container.firstChild
 
     const nextState = { ...initialState, darkTheme: !initialState.darkTheme }
     const triggerChange = reducer(initialState, toggleDarkTheme())
 
     expect(triggerChange).toEqual(nextState)
-
     expect(target).toHaveClass('dark')
   })
 
@@ -133,13 +143,20 @@ describe('TakeNote Tests', () => {
     expect(component).toBeTruthy()
   })
 
-  // it('Should Open the Settings Modal when clicked settings icon', () => {
-  //   const container = renderWithRouter(<TakeNoteApp/>)
-  //   const settingsBtn = screen.getByRole('button', {name: 'Settings'})
-  //   fireEvent.click(settingsBtn)
-  //
-  //   const target = container.getByText('settings-modal')
-  //
-  //   expect(target).toBeInTheDocument()
-  // })
+  it('Should Open the settings model when clicked settings icon', () => {
+    const container = renderWithRouter(<TakeNoteApp />)
+    const settingsBtn = screen.getByRole('button', { name: 'Settings' })
+    // const settingsBtn = screen.getByRole('button', {name: 'Settings'})
+
+    fireEvent.click(settingsBtn)
+
+    // const target = container.getByRole('Settings-model')
+    const target = container.findAllByRole('dimmer')
+    // const target = container.container.getElementsByClassName('dimmer')
+    //  const target = container.getByRole('dimmer')
+
+    // expect(target).toBeInTheDocument()
+    expect(target).toBeTruthy()
+    // expect(target).toHaveClass('settings-modal')
+  })
 })
