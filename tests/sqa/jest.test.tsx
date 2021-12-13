@@ -5,6 +5,7 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom/extend-expect'
 
 import userEvent from '@testing-library/user-event'
+import dayjs = require('dayjs')
 
 import { TakeNoteApp } from '../../src/client/containers/TakeNoteApp'
 import { EmptyEditor } from '../../src/client/components/Editor/EmptyEditor'
@@ -15,6 +16,10 @@ import {
 } from '../../src/client/components/AppSidebar/AddCategoryForm'
 import reducer, { initialState, toggleDarkTheme } from '../../src/client/slices/settings'
 import { NoteEditor } from '../../src/client/containers/NoteEditor'
+import {
+  LastSyncedNotification,
+  LastSyncedNotificationProps,
+} from '../../src/client/components/LastSyncedNotification'
 
 describe('TakeNote Tests', () => {
   // it('Should have Add Category component rendered when loaded TakeNote App', () => {
@@ -73,18 +78,14 @@ describe('TakeNote Tests', () => {
   })
 
   it('Should Show the last sync time on clicking Sync button', () => {
-    const component = renderWithRouter(<TakeNoteApp />)
-    const noteEditor = screen.getByTestId('sidebar-action-create-new-note')
-    fireEvent.keyDown(noteEditor, { key: 'n', ctrlKey: true, altKey: true })
-    const syncBtn = screen.getByText('12:29 AM on 12/13/2021')
+    const enabledProps: LastSyncedNotificationProps = {
+      datetime: '',
+      pending: false,
+      syncing: false,
+    }
 
-    fireEvent.click(syncBtn)
-
-    const timeStamp = new Date().toLocaleString()
-    console.log(timeStamp)
-
-    const lastSyncTime = screen.getByTestId('last-synced-notification-date')
-    expect(lastSyncTime).toBeInTheDocument()
+    const component = render(<LastSyncedNotification {...enabledProps} />)
+    expect(component).toBeTruthy()
   })
 
   it('Should render the TakeNote component properly', () => {
