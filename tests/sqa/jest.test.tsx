@@ -143,21 +143,4 @@ describe('TakeNote Tests', () => {
     const component = render(<AddCategoryForm {...enabledProps} />)
     expect(component).toBeTruthy()
   })
-
-  it('Should Open the settings model when clicked settings icon', () => {
-    const container = renderWithRouter(<TakeNoteApp />)
-    const settingsBtn = screen.getByRole('button', { name: 'Settings' })
-    // const settingsBtn = screen.getByRole('button', {name: 'Settings'})
-
-    fireEvent.click(settingsBtn)
-
-    // const target = container.getByRole('Settings-model')
-    const target = container.findAllByRole('dimmer')
-    // const target = container.container.getElementsByClassName('dimmer')
-    //  const target = container.getByRole('dimmer')
-
-    // expect(target).toBeInTheDocument()
-    expect(target).toBeTruthy()
-    // expect(target).toHaveClass('settings-modal')
-  })
 })
