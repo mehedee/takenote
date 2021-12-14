@@ -22,19 +22,6 @@ import {
 } from '../../src/client/components/LastSyncedNotification'
 
 describe('TakeNote Tests', () => {
-  // it('Should have Add Category component rendered when loaded TakeNote App', () => {
-  //   const props = {
-  //     handler: jest.fn,
-  //     label: 'Test',
-  //     dataTestID: 'add-category-button',
-  //   }
-  //
-  //   render(<AddCategoryButton {...props} />)
-  //
-  //   const content = screen.getByTestId('add-category-button')
-  //   expect(content).toBeInTheDocument()
-  // })
-
   function createCategory(categoryName: string) {
     // click the Add Category Button
     const addCategoryBtn = screen.getByTestId('add-category-button')
@@ -75,60 +62,6 @@ describe('TakeNote Tests', () => {
     targetElement.forEach((element) => {
       expect(element).not.toBeInTheDocument()
     })
-  })
-
-  it('Should Show the last sync time on clicking Sync button', () => {
-    const enabledProps: LastSyncedNotificationProps = {
-      datetime: '',
-      pending: false,
-      syncing: false,
-    }
-
-    const component = render(<LastSyncedNotification {...enabledProps} />)
-    expect(component).toBeTruthy()
-  })
-
-  it('Should render the TakeNote component properly', () => {
-    const component = renderWithRouter(<TakeNoteApp />)
-    const location = window.location.pathname
-
-    expect(location).toBe('/')
-    expect(component).toBeTruthy()
-  })
-
-  it('Should change to `dark theme` when clicked the `theme button`', () => {
-    const container = renderWithRouter(<TakeNoteApp />)
-    const themeButton = screen.getByRole('button', { name: 'Themes' })
-    fireEvent.click(themeButton)
-
-    const target = container.container.firstChild
-
-    const nextState = { ...initialState, darkTheme: !initialState.darkTheme }
-    const triggerChange = reducer(initialState, toggleDarkTheme())
-
-    expect(triggerChange).toEqual(nextState)
-    expect(target).toHaveClass('dark')
-  })
-
-  it('Should open new note in the window when pressed `CTRL+ALT+N`', () => {
-    const container = renderWithRouter(<TakeNoteApp />)
-    const noteEditor = screen.getByTestId('sidebar-action-create-new-note')
-    fireEvent.keyDown(noteEditor, { key: 'n', ctrlKey: true, altKey: true })
-    const target = screen.getByText('New note')
-    expect(target).toBeInTheDocument()
-  })
-
-  it('Should Render the Settings Modal on click', () => {
-    expect(2 + 2).toBe(4)
-  })
-
-  it('Should render `Empty Editor` component with Keyboard indicators', () => {
-    const component = render(<EmptyEditor />)
-    const createNoteText = component.queryByTestId('empty-editor')
-    expect(createNoteText).toBeInTheDocument()
-    expect(component.getByText('CTRL')).toBeInTheDocument()
-    expect(component.getByText('ALT')).toBeInTheDocument()
-    expect(component.getByText('N')).toBeInTheDocument()
   })
 
   it('Should render `Category Add Form` component when the `Add Category` button is clicked', () => {
