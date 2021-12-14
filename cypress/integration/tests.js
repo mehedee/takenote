@@ -76,10 +76,11 @@ describe('Render `Category Add Form` component when the `Add Category` button is
 
 describe('Clicking on Last Sync btn should show last sync time stamp', () => {
   const getTimeAndDate = () => {
-    const timeStamp = new Date().toLocaleString()
+    const timeStamp = new Date().toLocaleString('en-US')
     const date = timeStamp.split(',')[0]
     const timeArr = timeStamp.split(',')[1].split(':')
     const time = timeArr[0] + ':' + timeArr[1] + ' ' + timeArr[2].split(' ')[1]
+
     return {
       time,
       date,
