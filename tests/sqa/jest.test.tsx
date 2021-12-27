@@ -112,14 +112,6 @@ describe('TakeNote Tests', () => {
     expect(target).toBeInTheDocument()
   })
 
-  it('Should Render the Settings Modal on click', () => {
-    const container = renderWithRouter(<TakeNoteApp />)
-    const themeButton = screen.getByRole('button', { name: 'Settings' })
-    fireEvent.click(themeButton)
-    const target = screen.getByText('Log out')
-    expect(target).toBeInTheDocument()
-  })
-
   it('Should render `Empty Editor` component with Keyboard indicators', () => {
     const component = render(<EmptyEditor />)
     const createNoteText = component.queryByTestId('empty-editor')
@@ -174,6 +166,17 @@ describe('TakeNote Tests', () => {
     const { getByTestId } = render(<LastSyncedNotification {...enabledProps} />)
     const target = getByTestId(TestID.LAST_SYNCED_NOTIFICATION_DATE).innerHTML
     expect(target).toBe(dayjs(Date()).format('LT on L'))
+  })
+
+  it('Should Render the Settings Modal on click', () => {
+    const container = renderWithRouter(<TakeNoteApp />)
+    const themeButton = screen.getByRole('button', { name: 'Settings' })
+    fireEvent.click(themeButton)
+
+    // @ts-ignore
+    const target = container.container.firstChild
+    // const target = screen.getByText('Log out')
+    expect(target.childNodes[1]).toHaveClass('dimmer')
   })
 
   it('Should See Preference menu on Settings Page', () => {
@@ -233,6 +236,15 @@ describe('TakeNote Tests', () => {
     fireEvent.click(target)
 
     target = screen.getByText('View source')
+    expect(target).toBeInTheDocument()
+  })
+
+  it('Should See Logout button in Settings', () => {
+    const container = renderWithRouter(<TakeNoteApp />)
+    const themeButton = screen.getByRole('button', { name: 'Settings' })
+    fireEvent.click(themeButton)
+    const target = screen.getByRole('button', { name: 'Log out' })
+
     expect(target).toBeInTheDocument()
   })
 })
