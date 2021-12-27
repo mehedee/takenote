@@ -15,26 +15,18 @@ import {
   AddCategoryFormProps,
 } from '../../src/client/components/AppSidebar/AddCategoryForm'
 import reducer, { initialState, toggleDarkTheme } from '../../src/client/slices/settings'
-import { NoteEditor } from '../../src/client/containers/NoteEditor'
 import {
   LastSyncedNotification,
   LastSyncedNotificationProps,
 } from '../../src/client/components/LastSyncedNotification'
+import { AddCategoryButton } from '../../src/client/components/AppSidebar/AddCategoryButton'
+import {
+  ScratchpadOption,
+  ScratchpadOptionProps,
+} from '../../src/client/components/AppSidebar/ScratchpadOption'
+import { TestID } from '../../src/resources/TestID'
 
 describe('TakeNote Tests', () => {
-  // it('Should have Add Category component rendered when loaded TakeNote App', () => {
-  //   const props = {
-  //     handler: jest.fn,
-  //     label: 'Test',
-  //     dataTestID: 'add-category-button',
-  //   }
-  //
-  //   render(<AddCategoryButton {...props} />)
-  //
-  //   const content = screen.getByTestId('add-category-button')
-  //   expect(content).toBeInTheDocument()
-  // })
-
   function createCategory(categoryName: string) {
     // click the Add Category Button
     const addCategoryBtn = screen.getByTestId('add-category-button')
@@ -47,6 +39,19 @@ describe('TakeNote Tests', () => {
     fireEvent.submit(formSubmitBtn)
   }
 
+  it('Should have Add Category component rendered when loaded TakeNote App', () => {
+    const props = {
+      handler: jest.fn,
+      label: 'Test',
+      dataTestID: 'add-category-button',
+    }
+
+    render(<AddCategoryButton {...props} />)
+
+    const content = screen.getByTestId('add-category-button')
+    expect(content).toBeInTheDocument()
+  })
+
   it('Should add new category', () => {
     const component = renderWithRouter(<TakeNoteApp />)
     const categoryName = 'TestCategory'
@@ -56,7 +61,7 @@ describe('TakeNote Tests', () => {
     expect(selector).toBeInTheDocument()
   })
 
-  it('Should Collapse Category List if there are items in categories', () => {
+  it('Should Collapse Category List on click if there are items in categories', () => {
     const component = renderWithRouter(<TakeNoteApp />)
 
     createCategory('TestCategory')
@@ -75,17 +80,6 @@ describe('TakeNote Tests', () => {
     targetElement.forEach((element) => {
       expect(element).not.toBeInTheDocument()
     })
-  })
-
-  it('Should Show the last sync time on clicking Sync button', () => {
-    const enabledProps: LastSyncedNotificationProps = {
-      datetime: '',
-      pending: false,
-      syncing: false,
-    }
-
-    const component = render(<LastSyncedNotification {...enabledProps} />)
-    expect(component).toBeTruthy()
   })
 
   it('Should render the TakeNote component properly', () => {
@@ -119,7 +113,11 @@ describe('TakeNote Tests', () => {
   })
 
   it('Should Render the Settings Modal on click', () => {
-    expect(2 + 2).toBe(4)
+    const container = renderWithRouter(<TakeNoteApp />)
+    const themeButton = screen.getByRole('button', { name: 'Settings' })
+    fireEvent.click(themeButton)
+    const target = screen.getByText('Log out')
+    expect(target).toBeInTheDocument()
   })
 
   it('Should render `Empty Editor` component with Keyboard indicators', () => {
@@ -142,5 +140,99 @@ describe('TakeNote Tests', () => {
     }
     const component = render(<AddCategoryForm {...enabledProps} />)
     expect(component).toBeTruthy()
+  })
+
+  it('Should have Search button on the page', () => {
+    const component = renderWithRouter(<TakeNoteApp />)
+    const target = screen.getByTestId('note-search')
+    expect(target).toBeInTheDocument()
+  })
+
+  it('Should have Open new note page on New Note menu click', () => {
+    const component = renderWithRouter(<TakeNoteApp />)
+    expect(component).toBeTruthy()
+  })
+
+  it('renders the ScratchpadOption component', () => {
+    const enabledProps: ScratchpadOptionProps = {
+      swapFolder: jest.fn,
+      active: true,
+    }
+
+    const component = render(<ScratchpadOption {...enabledProps} />)
+
+    expect(component).toBeTruthy()
+  })
+
+  it('Should display date on Last Sync Notification Date ', () => {
+    const enabledProps: LastSyncedNotificationProps = {
+      datetime: Date(),
+      pending: false,
+      syncing: false,
+    }
+
+    const { getByTestId } = render(<LastSyncedNotification {...enabledProps} />)
+    const target = getByTestId(TestID.LAST_SYNCED_NOTIFICATION_DATE).innerHTML
+    expect(target).toBe(dayjs(Date()).format('LT on L'))
+  })
+
+  it('Should See Preference menu on Settings Page', () => {
+    const container = renderWithRouter(<TakeNoteApp />)
+    const themeButton = screen.getByRole('button', { name: 'Settings' })
+    fireEvent.click(themeButton)
+    const target = screen.getByRole('button', { name: 'Preferences' })
+    expect(target).toBeInTheDocument()
+  })
+
+  it('Should See Data Management menu on Settings Page', () => {
+    const container = renderWithRouter(<TakeNoteApp />)
+    const themeButton = screen.getByRole('button', { name: 'Settings' })
+    fireEvent.click(themeButton)
+    const target = screen.getByRole('button', { name: 'Data management' })
+    expect(target).toBeInTheDocument()
+  })
+
+  it('Should See Export Button from Data Management in Settings', () => {
+    const container = renderWithRouter(<TakeNoteApp />)
+    const themeButton = screen.getByRole('button', { name: 'Settings' })
+    fireEvent.click(themeButton)
+    let target = screen.getByRole('button', { name: 'Data management' })
+    fireEvent.click(target)
+
+    target = screen.getByRole('button', { name: 'Export backup' })
+    expect(target).toBeInTheDocument()
+  })
+
+  it('Should See Import Button from Data Management in Settings', () => {
+    const container = renderWithRouter(<TakeNoteApp />)
+    const themeButton = screen.getByRole('button', { name: 'Settings' })
+    fireEvent.click(themeButton)
+    let target = screen.getByRole('button', { name: 'Data management' })
+    fireEvent.click(target)
+
+    target = screen.getByRole('button', { name: 'Import backup' })
+    expect(target).toBeInTheDocument()
+  })
+
+  it('Should See Import Button from Data Management in Settings', () => {
+    const container = renderWithRouter(<TakeNoteApp />)
+    const themeButton = screen.getByRole('button', { name: 'Settings' })
+    fireEvent.click(themeButton)
+    let target = screen.getByRole('button', { name: 'Data management' })
+    fireEvent.click(target)
+
+    target = screen.getByRole('button', { name: 'Download all notes' })
+    expect(target).toBeInTheDocument()
+  })
+
+  it('Should See View Source button in About TakeNote in Settings', () => {
+    const container = renderWithRouter(<TakeNoteApp />)
+    const themeButton = screen.getByRole('button', { name: 'Settings' })
+    fireEvent.click(themeButton)
+    let target = screen.getByRole('button', { name: 'About TakeNote' })
+    fireEvent.click(target)
+
+    target = screen.getByText('View source')
+    expect(target).toBeInTheDocument()
   })
 })
