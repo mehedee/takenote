@@ -39,7 +39,7 @@ describe('TakeNote Tests', () => {
     fireEvent.submit(formSubmitBtn)
   }
 
-  it('Should have Add Category component rendered when loaded TakeNote App', () => {
+  it('Should have Add Category component/button rendered when loaded TakeNote App', () => {
     const props = {
       handler: jest.fn,
       label: 'Test',
