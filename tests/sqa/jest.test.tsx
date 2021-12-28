@@ -217,7 +217,7 @@ describe('TakeNote Tests', () => {
     expect(target).toBeInTheDocument()
   })
 
-  it('Should See Import Button from Data Management in Settings', () => {
+  it('Should See Download All Button from Data Management in Settings', () => {
     const container = renderWithRouter(<TakeNoteApp />)
     const themeButton = screen.getByRole('button', { name: 'Settings' })
     fireEvent.click(themeButton)
